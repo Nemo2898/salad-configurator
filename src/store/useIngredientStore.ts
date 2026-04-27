@@ -12,7 +12,7 @@ interface IngredientStore {
   removeIngredient: (id: number) => void
 }
 
-export const useIngredientStore = create<IngredientStore>((set) => ({
+export const useIngredientStore = create<IngredientStore>((set, get) => ({
   slots: {},
   baseType: 1,
   selectedBowl: null,
@@ -23,7 +23,21 @@ export const useIngredientStore = create<IngredientStore>((set) => ({
   clearSelection: () =>
     set({ slots: {}, selectedBowl: null, baseType: 1 }),
 
-  addIngredient: () => {},
+  addIngredient: (item) => {
+    const { slots, selectedBowl } = get()
+    if (item.categoryId === 6) {
+      set({ slots: { ...slots, base: item } })
+    } else {
+      const slotCount = selectedBowl?.slot_count ?? 0
+      for (let i = 1; i <= slotCount; i++) {
+        const key = `slot-${i}`
+        if (!slots[key]) {
+          set({ slots: { ...slots, [key]: item } })
+          return
+        }
+      }
+    }
+  },
 
   removeIngredient: () => {},
 }))
