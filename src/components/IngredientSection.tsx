@@ -73,6 +73,13 @@ export default function IngredientSection({ categories, ingredients }: Props) {
           <IngredientCard key={ingredient.id} ingredient={ingredient} />
         ))}
       </div>
+
+      {/* Dietary Legend */}
+      <div className="flex gap-4 mt-6 justify-center">
+        <span className="bg-white text-black text-xs font-bold px-3 py-1 rounded-full">G</span>
+        <span className="bg-white text-black text-xs font-bold px-3 py-1 rounded-full">L</span>
+        <span className="bg-white text-black text-xs font-bold px-3 py-1 rounded-full">V</span>
+      </div>
     </div>
   )
 }
