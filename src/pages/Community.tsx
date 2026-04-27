@@ -2,7 +2,7 @@ import { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import { useAuthStore } from "../store/useAuthStore"
 import { useIngredientStore } from "../store/useIngredientStore"
-import { getRecipes, deleteRecipe, getBowls, getIngredients } from "../services/api"
+import { getRecipes, deleteRecipe, getBowls, getIngredients, getBaseIngredients } from "../services/api"
 import type { Bowl, Ingredient } from "../types"
 
 interface ApiRecipe {
@@ -64,9 +64,13 @@ export default function Community() {
       if (recipe.slots) {
         useIngredientStore.setState({ slots: recipe.slots })
       } else if (recipe.ingredient_ids && recipe.ingredient_ids.length > 0) {
-        const allIngredients: Ingredient[] = await getIngredients()
+        const [allIngredients, baseIngredients] = await Promise.all([
+          getIngredients(),
+          getBaseIngredients(),
+        ])
+        const all = [...allIngredients, ...baseIngredients]
         const matched = recipe.ingredient_ids
-          .map((id) => allIngredients.find((i) => i.id === id))
+          .map((id) => all.find((i) => i.id === id))
           .filter((i): i is Ingredient => i != null)
 
         const newSlots: Record<string, Ingredient> = {}
