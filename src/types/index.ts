@@ -6,6 +6,7 @@ export interface BaseType {
   name: string
   price?: number
   image_url: string
+  wedge_image_url?: string
   barcode_url: string
 }
 
