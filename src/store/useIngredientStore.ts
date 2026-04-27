@@ -39,5 +39,13 @@ export const useIngredientStore = create<IngredientStore>((set, get) => ({
     }
   },
 
-  removeIngredient: () => {},
+  removeIngredient: (id) => {
+    const { slots } = get()
+    const newSlots = { ...slots }
+    const key = Object.keys(newSlots).find((k) => newSlots[k]?.id === id)
+    if (key) {
+      newSlots[key] = null
+      set({ slots: newSlots })
+    }
+  },
 }))
