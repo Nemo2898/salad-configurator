@@ -7,6 +7,8 @@ interface Props {
 
 export default function BaseSelection({ bases }: Props) {
   const addIngredient = useIngredientStore((s) => s.addIngredient)
+  const slots = useIngredientStore((s) => s.slots)
+  const selectedBase = slots.base ?? null
 
   return (
     <div className="bg-zinc-800 rounded-[3rem] p-6 text-white w-full lg:w-1/4 flex flex-col items-center shadow-lg">
@@ -24,7 +26,9 @@ export default function BaseSelection({ bases }: Props) {
         <div key={base.id} className="border-b border-gray-600 pb-2 flex justify-end gap-4 items-center w-full mb-3">
           <button
             onClick={() => addIngredient(base)}
-            className="hover:text-[#A2D135] transition-colors"
+            className={`hover:text-[#A2D135] transition-colors ${
+              selectedBase?.id === base.id ? "text-[#A2D135] font-bold" : ""
+            }`}
           >
             {base.name}
           </button>
