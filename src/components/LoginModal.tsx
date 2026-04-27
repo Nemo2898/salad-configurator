@@ -2,6 +2,7 @@ import { useState } from "react"
 import Modal from "./Modal"
 import { login } from "../services/api"
 import { useAuthStore } from "../store/useAuthStore"
+import { usePriceStore } from "../store/usePriceStore"
 
 interface LoginModalProps {
   isOpen: boolean
@@ -13,6 +14,7 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
   const [password, setPassword] = useState("")
   const [error, setError] = useState("")
   const authLogin = useAuthStore((s) => s.login)
+  const fetchPrices = usePriceStore((s) => s.fetchPrices)
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -21,6 +23,7 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
     try {
       const data = await login(email, password)
       authLogin(data.token, data.name)
+      await fetchPrices(data.token)
       setEmail("")
       setPassword("")
       onClose()
