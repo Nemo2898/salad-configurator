@@ -9,13 +9,15 @@ interface Props {
 
 export default function IngredientSection({ categories, ingredients }: Props) {
   const [activeCategory, setActiveCategory] = useState<string>("all")
+  const [searchQuery, setSearchQuery] = useState("")
 
   const visibleCategories = categories.filter((c) => c.id !== 6)
 
   const filteredIngredients = ingredients.filter((i) => {
     if (i.categoryId === 6) return false
-    if (activeCategory === "all") return true
-    return i.categoryId === Number(activeCategory)
+    if (activeCategory !== "all" && i.categoryId !== Number(activeCategory)) return false
+    if (searchQuery && !i.name.toLowerCase().includes(searchQuery.toLowerCase())) return false
+    return true
   })
 
   return (
@@ -33,6 +35,8 @@ export default function IngredientSection({ categories, ingredients }: Props) {
       <input
         type="text"
         placeholder="Search ingredients..."
+        value={searchQuery}
+        onChange={(e) => setSearchQuery(e.target.value)}
         className="rounded-full px-6 py-3 text-black outline-none w-64 border-2 border-transparent focus:border-[#A2D135] mb-6"
       />
 
