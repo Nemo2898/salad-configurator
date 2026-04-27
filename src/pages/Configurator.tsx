@@ -19,8 +19,8 @@ export default function Configurator() {
     async function fetchData() {
       try {
         const [bowlsData, categoriesData, ingredientsData, baseIngredientsData] = await Promise.all([
-          getBowls(),
-          getCategories(),
+          getBowls(baseType),
+          getCategories(baseType),
           getIngredients(),
           getBaseIngredients()
         ])
@@ -33,7 +33,7 @@ export default function Configurator() {
       }
     }
     fetchData()
-  }, [])
+  }, [baseType])
 
   const filteredBowls = bowls.filter((b) => b.base_type_id === baseType)
   const filteredCategories = categories.filter((c) => c.base_type_id === baseType)
