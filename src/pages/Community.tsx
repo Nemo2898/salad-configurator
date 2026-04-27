@@ -1,11 +1,24 @@
 import { useState, useEffect } from "react"
+import { useNavigate } from "react-router-dom"
 import { useAuthStore } from "../store/useAuthStore"
-import { getRecipes, deleteRecipe } from "../services/api"
-import type { Recipe } from "../types"
+import { useIngredientStore } from "../store/useIngredientStore"
+import { getRecipes, deleteRecipe, getBowls } from "../services/api"
+import type { Bowl, Ingredient } from "../types"
+
+interface ApiRecipe {
+  id: number
+  name: string
+  bowl_id: number
+  is_public: boolean
+  slots?: Record<string, Ingredient>
+  ingredient_ids?: number[]
+}
 
 export default function Community() {
   const token = useAuthStore((s) => s.token)
-  const [recipes, setRecipes] = useState<Recipe[]>([])
+  const setBowl = useIngredientStore((s) => s.setBowl)
+  const navigate = useNavigate()
+  const [recipes, setRecipes] = useState<ApiRecipe[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState("")
 
@@ -34,6 +47,24 @@ export default function Community() {
       setRecipes((prev) => prev.filter((r) => r.id !== id))
     } catch {
       setError("Failed to delete recipe")
+    }
+  }
+
+  async function handleLoad(recipe: ApiRecipe) {
+    try {
+      const bowls: Bowl[] = await getBowls()
+      const bowl = bowls.find((b) => b.id === recipe.bowl_id)
+      if (!bowl) {
+        setError("Bowl not found")
+        return
+      }
+      setBowl(bowl)
+      if (recipe.slots) {
+        useIngredientStore.setState({ slots: recipe.slots })
+      }
+      navigate("/")
+    } catch {
+      setError("Failed to load recipe")
     }
   }
 
@@ -71,16 +102,23 @@ export default function Community() {
               <div>
                 <h3 className="font-bold text-black text-lg">{recipe.name}</h3>
                 <p className="text-gray-500 text-sm">
-                  {recipe.ingredientIds.length} ingredients
-                  {recipe.is_public ? " · Public" : " · Private"}
+                  {recipe.is_public ? "Public" : "Private"}
                 </p>
               </div>
-              <button
-                onClick={() => handleDelete(recipe.id)}
-                className="text-red-500 hover:text-red-700 font-bold text-sm px-3 py-1 border border-red-300 rounded-lg hover:bg-red-50 transition-colors"
-              >
-                Delete
-              </button>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => handleLoad(recipe)}
+                  className="text-[#A2D135] hover:bg-[#A2D135]/10 font-bold text-sm px-3 py-1 border border-[#A2D135] rounded-lg transition-colors"
+                >
+                  Load
+                </button>
+                <button
+                  onClick={() => handleDelete(recipe.id)}
+                  className="text-red-500 hover:text-red-700 font-bold text-sm px-3 py-1 border border-red-300 rounded-lg hover:bg-red-50 transition-colors"
+                >
+                  Delete
+                </button>
+              </div>
             </div>
           ))}
         </div>
