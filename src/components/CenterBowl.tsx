@@ -1,4 +1,6 @@
+import { useState } from "react"
 import { useIngredientStore } from "../store/useIngredientStore"
+import SaveRecipeModal from "./SaveRecipeModal"
 
 const DIVIDER_4 = "https://www.cc.puv.fi/~asa/fresh/images/jakaja_4_lohkoa.png"
 const DIVIDER_6 = "https://www.cc.puv.fi/~asa/fresh/images/jakaja_6_lohkoa.png"
@@ -16,6 +18,7 @@ export default function CenterBowl() {
   const selectedBowl = useIngredientStore((s) => s.selectedBowl)
   const clearSelection = useIngredientStore((s) => s.clearSelection)
   const clearSlot = useIngredientStore((s) => s.clearSlot)
+  const [isSaveOpen, setIsSaveOpen] = useState(false)
 
   const baseIngredient = slots.base ?? null
   const slotCount = selectedBowl?.slot_count ?? 0
@@ -51,16 +54,25 @@ export default function CenterBowl() {
           🗑️
         </button>
         <button
-          onClick={() => alert("Feature coming soon!")}
+          onClick={() => {
+            const slotCount = selectedBowl?.slot_count ?? 0
+            for (let i = slotCount; i >= 1; i--) {
+              const key = `slot-${i}`
+              if (slots[key]) {
+                clearSlot(key)
+                return
+              }
+            }
+          }}
           className="px-3 py-2 rounded-lg bg-gray-200 hover:bg-gray-300 transition-colors text-lg"
-          title="Undo"
+          title="Undo last ingredient"
         >
           ↩️
         </button>
         <button
-          onClick={() => alert("Feature coming soon!")}
+          onClick={() => setIsSaveOpen(true)}
           className="px-3 py-2 rounded-lg bg-gray-200 hover:bg-gray-300 transition-colors text-lg"
-          title="Save"
+          title="Save recipe"
         >
           💾
         </button>
@@ -127,6 +139,8 @@ export default function CenterBowl() {
         <p>100 g / 1,99 €</p>
         <p>{selectedBowl ? selectedBowl.volume : 0} ml</p>
       </div>
+
+      <SaveRecipeModal isOpen={isSaveOpen} onClose={() => setIsSaveOpen(false)} />
     </div>
   );
 }

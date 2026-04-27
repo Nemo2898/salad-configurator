@@ -71,3 +71,20 @@ export async function saveRecipe(token: string, data: SaveRecipeData) {
   if (!res.ok) throw new Error("Failed to save recipe")
   return res.json()
 }
+
+export async function getRecipes(token: string) {
+  const res = await fetch(`${API_BASE}/recipes`, {
+    headers: { Authorization: `Bearer ${token}` },
+  })
+  const data = await res.json()
+  return data
+}
+
+export async function deleteRecipe(token: string, id: number) {
+  const res = await fetch(`${API_BASE}/recipes/${id}`, {
+    method: "DELETE",
+    headers: { Authorization: `Bearer ${token}` },
+  })
+  if (!res.ok) throw new Error("Failed to delete recipe")
+  return res.json()
+}
