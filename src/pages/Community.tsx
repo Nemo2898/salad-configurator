@@ -2,7 +2,7 @@ import { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import { useAuthStore } from "../store/useAuthStore"
 import { useIngredientStore } from "../store/useIngredientStore"
-import { getRecipes, deleteRecipe, getBowls } from "../services/api"
+import { getRecipes, deleteRecipe, getBowls, getIngredients } from "../services/api"
 import type { Bowl, Ingredient } from "../types"
 
 interface ApiRecipe {
@@ -55,11 +55,32 @@ export default function Community() {
       if (recipe.bowl_id) {
         const bowls: Bowl[] = await getBowls()
         const bowl = bowls.find((b) => b.id === recipe.bowl_id)
-        if (bowl) setBowl(bowl)
+        if (bowl) {
+          setBowl(bowl)
+          useIngredientStore.setState({ baseType: bowl.base_type_id ?? 1 })
+        }
       }
+
       if (recipe.slots) {
         useIngredientStore.setState({ slots: recipe.slots })
+      } else if (recipe.ingredient_ids && recipe.ingredient_ids.length > 0) {
+        const allIngredients: Ingredient[] = await getIngredients()
+        const matched = recipe.ingredient_ids
+          .map((id) => allIngredients.find((i) => i.id === id))
+          .filter((i): i is Ingredient => i != null)
+
+        const newSlots: Record<string, Ingredient> = {}
+        let slotNum = 1
+        for (const ing of matched) {
+          if (ing.categoryId === 6) {
+            newSlots.base = ing
+          } else {
+            newSlots[`slot-${slotNum++}`] = ing
+          }
+        }
+        useIngredientStore.setState({ slots: newSlots })
       }
+
       navigate("/")
     } catch {
       setError("Failed to load recipe")
