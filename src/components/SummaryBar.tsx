@@ -6,19 +6,25 @@ import { calculateTotalWeight } from "../utils/calculations"
 
 export default function SummaryBar() {
   const slots = useIngredientStore((s) => s.slots)
-  const removeIngredient = useIngredientStore((s) => s.removeIngredient)
+  const clearSlot = useIngredientStore((s) => s.clearSlot)
   const prices = usePriceStore((s) => s.prices)
 
-  const activeIngredients: Ingredient[] = Object.values(slots).filter(
-    (i): i is Ingredient => i !== null
+  const slotEntries = Object.entries(slots).filter(
+    (entry): entry is [string, Ingredient] => entry[0] !== "base" && entry[1] !== null
   )
 
-  const totalWeight = calculateTotalWeight(activeIngredients)
+  const activeIngredients: Ingredient[] = slotEntries.map(([, ing]) => ing)
 
-  const totalPrice = activeIngredients.reduce((sum, ing) => {
-    const priceEntry = prices.find((p) => p.item_id === ing.id)
-    return sum + (priceEntry?.price ?? 0)
-  }, 0)
+  const totalWeight = calculateTotalWeight([
+    ...activeIngredients,
+    ...(slots.base ? [slots.base] : []),
+  ])
+
+  const totalPrice = [...activeIngredients, ...(slots.base ? [slots.base] : [])]
+    .reduce((sum, ing) => {
+      const priceEntry = prices.find((p) => p.item_id === ing.id)
+      return sum + (priceEntry?.price ?? 0)
+    }, 0)
 
   return (
     <div className="bg-zinc-800 rounded-[3rem] p-8 text-white w-full flex flex-col md:flex-row gap-8 shadow-xl">
@@ -28,14 +34,14 @@ export default function SummaryBar() {
           Selected ingredients
         </h3>
         <div className="flex flex-wrap gap-2">
-          {activeIngredients.map((ing) => (
+          {slotEntries.map(([key, ing]) => (
             <span
-              key={ing.id}
+              key={key}
               className="bg-[#A2D135] text-black text-sm font-bold px-3 py-1 rounded-full flex items-center gap-2"
             >
               {ing.name}
               <button
-                onClick={() => removeIngredient(ing.id)}
+                onClick={() => clearSlot(key)}
                 className="text-black hover:text-red-600 font-bold text-xs leading-none"
               >
                 x
@@ -48,7 +54,7 @@ export default function SummaryBar() {
       <div className="flex-1 flex flex-col justify-center items-center gap-6">
         <div className="flex flex-col items-center">
           <span className="bg-white text-black font-black text-2xl py-3 w-32 rounded-full mb-2 shadow-md text-center">
-            {activeIngredients.length} kpl
+            {slotEntries.length} kpl
           </span>
           <span className="text-sm opacity-80">Item Count</span>
         </div>
