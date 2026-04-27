@@ -1,5 +1,4 @@
 import { useIngredientStore } from "../store/useIngredientStore"
-import type { Ingredient } from "../types"
 
 export default function CenterBowl() {
   const setBaseType = useIngredientStore((s) => s.setBaseType)
@@ -7,12 +6,10 @@ export default function CenterBowl() {
   const slots = useIngredientStore((s) => s.slots)
   const selectedBowl = useIngredientStore((s) => s.selectedBowl)
   const clearSelection = useIngredientStore((s) => s.clearSelection)
+  const clearSlot = useIngredientStore((s) => s.clearSlot)
 
   const baseIngredient = slots.base ?? null
-
-  const activeIngredients: Ingredient[] = Object.values(slots).filter(
-    (i): i is Ingredient => i !== null
-  )
+  const slotCount = selectedBowl?.slot_count ?? 0
 
   return (
     <div className="flex-1 flex flex-col items-center justify-center min-h-[400px] mt-4 lg:mt-0">
@@ -76,17 +73,43 @@ export default function CenterBowl() {
             className="absolute inset-0 w-full h-full object-cover rounded-full z-20"
           />
         )}
-        {activeIngredients.length === 0 ? (
-          <span className="text-gray-500 z-30">Bowl</span>
+        {slotCount === 0 ? (
+          <span className="text-gray-500 z-30">Select a bowl</span>
         ) : (
-          activeIngredients.filter((i) => i.categoryId !== 6).map((ing) => (
-            <span
-              key={ing.id}
-              className="bg-[#A2D135] text-black text-xs font-bold px-3 py-1 rounded-full z-30"
-            >
-              {ing.name}
-            </span>
-          ))
+          Array.from({ length: slotCount }, (_, i) => i + 1).map((slotNum) => {
+            const key = `slot-${slotNum}`
+            const item = slots[key]
+            const angle = (360 / slotCount) * (slotNum - 1)
+            return (
+              <div
+                key={key}
+                className="absolute inset-0 z-30 flex items-center justify-center"
+                style={{ transform: `rotate(${angle}deg)` }}
+              >
+                {item && item.wedge_image_url ? (
+                  <div className="relative w-1/2 h-1/2">
+                    <img
+                      src={item.wedge_image_url}
+                      alt={item.name}
+                      className="w-full h-full object-contain"
+                      style={{ transform: `rotate(${-angle}deg)` }}
+                    />
+                    <button
+                      onClick={() => clearSlot(key)}
+                      className="absolute top-0 right-0 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs leading-none hover:bg-red-700"
+                      style={{ transform: `rotate(${-angle}deg)` }}
+                    >
+                      ✕
+                    </button>
+                  </div>
+                ) : (
+                  <span className="text-gray-400 text-xs" style={{ transform: `rotate(${-angle}deg)` }}>
+                    Slot {slotNum}
+                  </span>
+                )}
+              </div>
+            )
+          })
         )}
       </div>
 
