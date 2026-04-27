@@ -5,6 +5,7 @@ export default function CenterBowl() {
   const setBaseType = useIngredientStore((s) => s.setBaseType)
   const baseType = useIngredientStore((s) => s.baseType)
   const slots = useIngredientStore((s) => s.slots)
+  const selectedBowl = useIngredientStore((s) => s.selectedBowl)
 
   const activeIngredients: Ingredient[] = Object.values(slots).filter(
     (i): i is Ingredient => i !== null
@@ -49,7 +50,7 @@ export default function CenterBowl() {
       {/* Bottom info */}
       <div className="mt-4 text-center text-gray-600">
         <p>100 g / 1,99 €</p>
-        <p>500 ml</p>
+        <p>{selectedBowl ? selectedBowl.volume : 0} ml</p>
       </div>
     </div>
   );
