@@ -23,6 +23,18 @@ export default function CenterBowl() {
   const baseIngredient = slots.base ?? null
   const slotCount = selectedBowl?.slot_count ?? 0
   const dividerUrl = getDividerUrl(slotCount)
+  const hasSelection = Object.values(slots).some((v) => v !== null)
+
+  function handleSwitchType(newType: number) {
+    if (hasSelection) {
+      if (window.confirm("Switching mode will clear your current selection. Continue?")) {
+        clearSelection()
+        setBaseType(newType)
+      }
+    } else {
+      setBaseType(newType)
+    }
+  }
 
   return (
     <div className="flex-1 flex flex-col items-center justify-center min-h-[400px] mt-4 lg:mt-0">
@@ -30,16 +42,16 @@ export default function CenterBowl() {
       {/* Top button row */}
       <div className="flex gap-3 mb-6 items-center">
         <button
-          onClick={() => setBaseType(1)}
+          onClick={() => handleSwitchType(1)}
           className={`px-4 py-2 rounded-lg transition-colors ${baseType === 1 ? "bg-green-400" : "bg-green-200"}`}
         >
           Salaatti
         </button>
         <button
-          onClick={() => setBaseType(2)}
+          onClick={() => handleSwitchType(2)}
           className={`px-4 py-2 rounded-lg transition-colors ${baseType === 2 ? "bg-blue-400" : "bg-blue-200"}`}
         >
-          Rahka
+          Curd
         </button>
 
         <button
