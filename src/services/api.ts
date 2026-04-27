@@ -38,3 +38,23 @@ export async function getIngredients() {
   const data = await res.json()
   return data
 }
+
+interface SaveRecipeData {
+  name: string
+  bowlId: number
+  ingredientIds: number[]
+  is_public: boolean
+}
+
+export async function saveRecipe(token: string, data: SaveRecipeData) {
+  const res = await fetch(`${API_BASE}/recipes`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(data),
+  })
+  if (!res.ok) throw new Error("Failed to save recipe")
+  return res.json()
+}
