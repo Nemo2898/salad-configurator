@@ -27,7 +27,6 @@ export default function Configurator() {
         setIngredients(ingredientsData)
       } catch (error) {
         console.error(error)
-      } finally {
       }
     }
     fetchData()

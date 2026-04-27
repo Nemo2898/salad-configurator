@@ -1,10 +1,12 @@
 import type { Ingredient } from "../types"
+import { useIngredientStore } from "../store/useIngredientStore"
 
 interface Props {
   ingredients: Ingredient[]
 }
 
 export default function BaseSelection({ ingredients }: Props) {
+  const addIngredient = useIngredientStore((s) => s.addIngredient)
   const bases = ingredients.filter((i) => i.categoryId === 6)
 
   return (
@@ -21,7 +23,10 @@ export default function BaseSelection({ ingredients }: Props) {
       {/* Dynamic base options */}
       {bases.map((base) => (
         <div key={base.id} className="border-b border-gray-600 pb-2 flex justify-end gap-4 items-center w-full mb-3">
-          <button className="hover:text-[#A2D135] transition-colors">
+          <button
+            onClick={() => addIngredient(base)}
+            className="hover:text-[#A2D135] transition-colors"
+          >
             {base.name}
           </button>
         </div>

@@ -27,7 +27,7 @@ export default function CenterBowl() {
         >
           Rahka
         </button>
-        <button className="px-4 py-2 bg-gray-200 rounded-lg">Icon</button>
+
       </div>
 
       {/* Big Bowl */}
