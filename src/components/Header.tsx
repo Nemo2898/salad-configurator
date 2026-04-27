@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom"
+import logoSrc from "../assets/fresse-logo.png"
 
 export default function Header() {
   return (
@@ -7,10 +8,9 @@ export default function Header() {
       {/* Left Logo */}
       <Link
         to="/"
-        className="w-24 h-24 rounded-full border-4 border-[#A2D135] flex items-center justify-center flex-col -mt-2 bg-zinc-800 shadow-lg"
+        className="w-24 h-24 rounded-full border-4 border-[#A2D135] flex items-center justify-center -mt-2 bg-zinc-800 shadow-lg overflow-hidden"
       >
-        <span className="text-xs">Fresh Food Factory</span>
-        <span className="text-lg font-bold tracking-widest">FRESSE</span>
+        <img src={logoSrc} alt="FRESSE" className="w-full h-full object-contain p-1" />
       </Link>
 
       {/* Center Title */}
