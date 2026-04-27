@@ -10,9 +10,16 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
 
+  function handleSubmit(e: React.FormEvent) {
+    e.preventDefault()
+    console.log("Login clicked")
+    setEmail("")
+    setPassword("")
+  }
+
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
-      <form className="flex flex-col gap-4 min-w-[300px]">
+      <form onSubmit={handleSubmit} className="flex flex-col gap-4 min-w-[300px]">
         <h2 className="text-xl font-bold text-black">Kirjaudu sisään</h2>
 
         <label className="flex flex-col gap-1 text-sm text-gray-700">
