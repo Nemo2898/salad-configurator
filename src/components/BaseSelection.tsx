@@ -1,11 +1,10 @@
 import type { Ingredient } from "../types"
 
 interface Props {
-  ingredients: Ingredient[]
+  baseIngredients: Ingredient[]
 }
 
-export default function BaseSelection({ ingredients }: Props) {
-  const bases = ingredients.filter((i) => i.categoryId === 6)
+export default function BaseSelection({ baseIngredients }: Props) {
 
   return (
     <div className="bg-zinc-800 rounded-[3rem] p-6 text-white w-full lg:w-1/4 flex flex-col items-center shadow-lg">
@@ -19,7 +18,7 @@ export default function BaseSelection({ ingredients }: Props) {
       <h2 className="text-xl font-semibold mb-6">Valitse salaattipohja</h2>
 
       {/* Dynamic base options */}
-      {bases.map((base) => (
+      {baseIngredients.map((base) => (
         <div key={base.id} className="border-b border-gray-600 pb-2 flex justify-end gap-4 items-center w-full mb-3">
           <button className="hover:text-[#A2D135] transition-colors">
             {base.name}
