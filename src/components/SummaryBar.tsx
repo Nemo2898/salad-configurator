@@ -1,17 +1,24 @@
 import { Link } from "react-router-dom"
 import { useIngredientStore } from "../store/useIngredientStore"
+import { usePriceStore } from "../store/usePriceStore"
 import type { Ingredient } from "../types"
 import { calculateTotalWeight } from "../utils/calculations"
 
 export default function SummaryBar() {
   const slots = useIngredientStore((s) => s.slots)
   const removeIngredient = useIngredientStore((s) => s.removeIngredient)
+  const prices = usePriceStore((s) => s.prices)
 
   const activeIngredients: Ingredient[] = Object.values(slots).filter(
     (i): i is Ingredient => i !== null
   )
 
   const totalWeight = calculateTotalWeight(activeIngredients)
+
+  const totalPrice = activeIngredients.reduce((sum, ing) => {
+    const priceEntry = prices.find((p) => p.item_id === ing.id)
+    return sum + (priceEntry?.price ?? 0)
+  }, 0)
 
   return (
     <div className="bg-zinc-800 rounded-[3rem] p-8 text-white w-full flex flex-col md:flex-row gap-8 shadow-xl">
@@ -53,7 +60,7 @@ export default function SummaryBar() {
         </div>
         <div className="flex flex-col items-center">
           <span className="bg-white text-black font-black text-2xl py-3 w-32 rounded-full mb-2 shadow-md text-center">
-            0,00 €
+            {totalPrice.toFixed(2).replace(".", ",")} €
           </span>
           <span className="text-sm opacity-80">Total Price</span>
         </div>
