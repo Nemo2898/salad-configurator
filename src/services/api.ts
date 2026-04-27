@@ -13,6 +13,14 @@ export async function login(email: string, password: string) {
   return data as { token: string; name: string }
 }
 
+export async function getPrices(token: string) {
+  const res = await fetch(`${API_BASE}/prices`, {
+    headers: { Authorization: `Bearer ${token}` },
+  })
+  const data = await res.json()
+  return data
+}
+
 export async function getBowls() {
   const res = await fetch(`${API_BASE}/bowls`)
   const data = await res.json()
