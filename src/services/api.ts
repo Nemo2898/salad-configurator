@@ -54,8 +54,8 @@ export async function getPrices(token: string) {
 
 interface SaveRecipeData {
   name: string
-  bowlId: number
-  ingredientIds: number[]
+  bowl_id: number
+  ingredient_ids: number[]
   is_public: boolean
 }
 

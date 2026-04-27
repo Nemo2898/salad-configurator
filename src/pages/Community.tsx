@@ -52,13 +52,11 @@ export default function Community() {
 
   async function handleLoad(recipe: ApiRecipe) {
     try {
-      const bowls: Bowl[] = await getBowls()
-      const bowl = bowls.find((b) => b.id === recipe.bowl_id)
-      if (!bowl) {
-        setError("Bowl not found")
-        return
+      if (recipe.bowl_id) {
+        const bowls: Bowl[] = await getBowls()
+        const bowl = bowls.find((b) => b.id === recipe.bowl_id)
+        if (bowl) setBowl(bowl)
       }
-      setBowl(bowl)
       if (recipe.slots) {
         useIngredientStore.setState({ slots: recipe.slots })
       }

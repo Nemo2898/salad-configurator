@@ -30,8 +30,8 @@ export default function SaveRecipeModal({ isOpen, onClose }: SaveRecipeModalProp
     try {
       await saveRecipe(token, {
         name: recipeName,
-        bowlId: selectedBowl.id,
-        ingredientIds,
+        bowl_id: selectedBowl.id,
+        ingredient_ids: ingredientIds,
         is_public: isPublic,
       })
       setStatus("success")
