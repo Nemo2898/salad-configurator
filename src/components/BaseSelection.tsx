@@ -2,12 +2,11 @@ import type { Ingredient } from "../types"
 import { useIngredientStore } from "../store/useIngredientStore"
 
 interface Props {
-  ingredients: Ingredient[]
+  bases: Ingredient[]
 }
 
-export default function BaseSelection({ ingredients }: Props) {
+export default function BaseSelection({ bases }: Props) {
   const addIngredient = useIngredientStore((s) => s.addIngredient)
-  const bases = ingredients.filter((i) => i.categoryId === 6)
 
   return (
     <div className="bg-zinc-800 rounded-[3rem] p-6 text-white w-full lg:w-1/4 flex flex-col items-center shadow-lg">

@@ -39,6 +39,12 @@ export async function getIngredients() {
   return data
 }
 
+export async function getBaseIngredients() {
+  const res = await fetch(`${API_BASE}/baseingredients`)
+  const data = await res.json()
+  return data
+}
+
 interface SaveRecipeData {
   name: string
   bowlId: number

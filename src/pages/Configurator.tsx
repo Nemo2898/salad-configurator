@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 import type { Bowl, Category, Ingredient } from "../types"
-import { getBowls, getCategories, getIngredients } from "../services/api"
+import { getBowls, getCategories, getIngredients, getBaseIngredients } from "../services/api"
 import { useIngredientStore } from "../store/useIngredientStore"
 import BaseSelection from "../components/BaseSelection.tsx"
 import BowlSelection from "../components/BowlSelection.tsx"
@@ -12,19 +12,22 @@ export default function Configurator() {
   const [bowls, setBowls] = useState<Bowl[]>([])
   const [categories, setCategories] = useState<Category[]>([])
   const [ingredients, setIngredients] = useState<Ingredient[]>([])
+  const [baseIngredients, setBaseIngredients] = useState<Ingredient[]>([])
   const baseType = useIngredientStore((s) => s.baseType)
 
   useEffect(() => {
     async function fetchData() {
       try {
-        const [bowlsData, categoriesData, ingredientsData] = await Promise.all([
+        const [bowlsData, categoriesData, ingredientsData, baseIngredientsData] = await Promise.all([
           getBowls(),
           getCategories(),
-          getIngredients()
+          getIngredients(),
+          getBaseIngredients()
         ])
         setBowls(bowlsData)
         setCategories(categoriesData)
         setIngredients(ingredientsData)
+        setBaseIngredients(baseIngredientsData)
       } catch (error) {
         console.error(error)
       }
@@ -42,7 +45,7 @@ export default function Configurator() {
       <div className="flex flex-col lg:flex-row gap-6 justify-between items-stretch">
         <BowlSelection bowls={filteredBowls} />
         <CenterBowl />
-        <BaseSelection ingredients={ingredients} />
+        <BaseSelection bases={baseIngredients} />
       </div>
 
       {/* Bottom row: ingredient section */}
