@@ -1,12 +1,26 @@
+import { useIngredientStore } from "../store/useIngredientStore"
 
 export default function CenterBowl() {
+  const setBaseType = useIngredientStore((s) => s.setBaseType)
+  const baseType = useIngredientStore((s) => s.baseType)
+
   return (
     <div className="flex-1 flex flex-col items-center justify-center min-h-[400px] mt-4 lg:mt-0">
 
       {/* Top button row */}
       <div className="flex gap-3 mb-6 items-center">
-        <button className="px-4 py-2 bg-green-200 rounded-lg">Salaatti</button>
-        <button className="px-4 py-2 bg-blue-200 rounded-lg">Rahka</button>
+        <button
+          onClick={() => setBaseType(1)}
+          className={`px-4 py-2 rounded-lg transition-colors ${baseType === 1 ? "bg-green-400" : "bg-green-200"}`}
+        >
+          Salaatti
+        </button>
+        <button
+          onClick={() => setBaseType(2)}
+          className={`px-4 py-2 rounded-lg transition-colors ${baseType === 2 ? "bg-blue-400" : "bg-blue-200"}`}
+        >
+          Rahka
+        </button>
         <button className="px-4 py-2 bg-gray-200 rounded-lg">Icon</button>
       </div>
 

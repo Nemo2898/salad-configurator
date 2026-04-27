@@ -1,10 +1,14 @@
 import type { Bowl } from "../types"
+import { useIngredientStore } from "../store/useIngredientStore"
 
 interface Props {
   bowls: Bowl[]
 }
 
 export default function BowlSelection({ bowls }: Props) {
+  const setBowl = useIngredientStore((s) => s.setBowl)
+  const selectedBowl = useIngredientStore((s) => s.selectedBowl)
+
   return (
     <div className="bg-zinc-800 rounded-[3rem] p-6 text-white w-full lg:w-1/4 flex flex-col items-center shadow-lg">
 
@@ -20,7 +24,12 @@ export default function BowlSelection({ bowls }: Props) {
       {bowls.map((bowl) => (
         <button
           key={bowl.id}
-          className="h-12 border-2 border-gray-600 rounded-xl flex items-center px-4 w-full mb-3 hover:border-[#A2D135] transition-colors"
+          onClick={() => setBowl(bowl)}
+          className={`h-12 border-2 rounded-xl flex items-center px-4 w-full mb-3 hover:border-[#A2D135] transition-colors ${
+            selectedBowl?.id === bowl.id
+              ? "border-[#A2D135] bg-[#A2D135]/10"
+              : "border-gray-600"
+          }`}
         >
           {bowl.name}
         </button>
