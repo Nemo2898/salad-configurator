@@ -12,13 +12,16 @@ interface SaveRecipeModalProps {
 export default function SaveRecipeModal({ isOpen, onClose }: SaveRecipeModalProps) {
   const [recipeName, setRecipeName] = useState("")
   const [isPublic, setIsPublic] = useState(false)
+  const [status, setStatus] = useState<"idle" | "success" | "error">("idle")
   const token = useAuthStore((s) => s.token)
   const slots = useIngredientStore((s) => s.slots)
   const selectedBowl = useIngredientStore((s) => s.selectedBowl)
+  const clearSelection = useIngredientStore((s) => s.clearSelection)
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     if (!token || !selectedBowl) return
+    setStatus("idle")
 
     const ingredientIds = Object.values(slots)
       .filter((i) => i !== null)
@@ -31,11 +34,12 @@ export default function SaveRecipeModal({ isOpen, onClose }: SaveRecipeModalProp
         ingredientIds,
         is_public: isPublic,
       })
+      setStatus("success")
+      clearSelection()
       setRecipeName("")
       setIsPublic(false)
-      onClose()
     } catch {
-      // error handled in Task 5.9
+      setStatus("error")
     }
   }
 
@@ -43,6 +47,13 @@ export default function SaveRecipeModal({ isOpen, onClose }: SaveRecipeModalProp
     <Modal isOpen={isOpen} onClose={onClose}>
       <form onSubmit={handleSubmit} className="flex flex-col gap-4 min-w-[300px]">
         <h2 className="text-xl font-bold text-black">Save Recipe</h2>
+
+        {status === "success" && (
+          <p className="text-green-600 text-sm font-medium">Recipe saved!</p>
+        )}
+        {status === "error" && (
+          <p className="text-red-500 text-sm font-medium">Failed to save recipe</p>
+        )}
 
         <label className="flex flex-col gap-1 text-sm text-gray-700">
           Recipe Name
