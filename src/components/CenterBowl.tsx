@@ -6,6 +6,7 @@ export default function CenterBowl() {
   const baseType = useIngredientStore((s) => s.baseType)
   const slots = useIngredientStore((s) => s.slots)
   const selectedBowl = useIngredientStore((s) => s.selectedBowl)
+  const clearSelection = useIngredientStore((s) => s.clearSelection)
 
   const activeIngredients: Ingredient[] = Object.values(slots).filter(
     (i): i is Ingredient => i !== null
@@ -27,6 +28,32 @@ export default function CenterBowl() {
           className={`px-4 py-2 rounded-lg transition-colors ${baseType === 2 ? "bg-blue-400" : "bg-blue-200"}`}
         >
           Rahka
+        </button>
+
+        <button
+          onClick={() => {
+            if (window.confirm("Are you sure you want to empty the bowl?")) {
+              clearSelection()
+            }
+          }}
+          className="px-3 py-2 rounded-lg bg-red-400 hover:bg-red-500 transition-colors text-lg"
+          title="Empty bowl"
+        >
+          🗑️
+        </button>
+        <button
+          onClick={() => alert("Feature coming soon!")}
+          className="px-3 py-2 rounded-lg bg-gray-200 hover:bg-gray-300 transition-colors text-lg"
+          title="Undo"
+        >
+          ↩️
+        </button>
+        <button
+          onClick={() => alert("Feature coming soon!")}
+          className="px-3 py-2 rounded-lg bg-gray-200 hover:bg-gray-300 transition-colors text-lg"
+          title="Save"
+        >
+          💾
         </button>
 
       </div>
