@@ -1,8 +1,14 @@
 import { useIngredientStore } from "../store/useIngredientStore"
+import type { Ingredient } from "../types"
 
 export default function CenterBowl() {
   const setBaseType = useIngredientStore((s) => s.setBaseType)
   const baseType = useIngredientStore((s) => s.baseType)
+  const slots = useIngredientStore((s) => s.slots)
+
+  const activeIngredients: Ingredient[] = Object.values(slots).filter(
+    (i): i is Ingredient => i !== null
+  )
 
   return (
     <div className="flex-1 flex flex-col items-center justify-center min-h-[400px] mt-4 lg:mt-0">
@@ -25,8 +31,19 @@ export default function CenterBowl() {
       </div>
 
       {/* Big Bowl */}
-      <div className="w-80 h-80 rounded-full border-[12px] border-gray-200 bg-gray-50 flex items-center justify-center shadow-inner relative">
-        <span className="text-gray-500">Bowl</span>
+      <div className="w-80 h-80 rounded-full border-[12px] border-gray-200 bg-gray-50 flex flex-col items-center justify-center shadow-inner relative gap-1 p-4 overflow-hidden">
+        {activeIngredients.length === 0 ? (
+          <span className="text-gray-500">Bowl</span>
+        ) : (
+          activeIngredients.map((ing) => (
+            <span
+              key={ing.id}
+              className="bg-[#A2D135] text-black text-xs font-bold px-3 py-1 rounded-full"
+            >
+              {ing.name}
+            </span>
+          ))
+        )}
       </div>
 
       {/* Bottom info */}
