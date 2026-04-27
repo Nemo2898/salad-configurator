@@ -1,7 +1,14 @@
+import { useState } from "react"
 import { Link } from "react-router-dom"
+import { useAuthStore } from "../store/useAuthStore"
+import LoginModal from "./LoginModal"
 import logoSrc from "../assets/fresse-logo.png"
 
 export default function Header() {
+  const [isLoginOpen, setIsLoginOpen] = useState(false)
+  const userName = useAuthStore((s) => s.userName)
+  const logout = useAuthStore((s) => s.logout)
+
   return (
     <header className="bg-zinc-800 text-white w-full h-32 flex justify-between items-start px-8 pt-4">
       
@@ -20,10 +27,19 @@ export default function Header() {
 
       {/* Right Menu */}
       <div className="bg-[#A2D135] text-black rounded-b-3xl rounded-t-xl px-6 py-4 flex flex-col gap-2 min-w-[200px] shadow-md">
-        <button className="text-left hover:underline">Login</button>
+        {userName ? (
+          <>
+            <span className="text-left font-semibold">Hello, {userName}</span>
+            <button className="text-left hover:underline" onClick={logout}>Logout</button>
+          </>
+        ) : (
+          <button className="text-left hover:underline" onClick={() => setIsLoginOpen(true)}>Login</button>
+        )}
         <Link to="/community" className="text-left hover:underline">Saved recipes</Link>
         <button className="text-left hover:underline">Settings</button>
       </div>
+
+      <LoginModal isOpen={isLoginOpen} onClose={() => setIsLoginOpen(false)} />
     </header>
   )
 }
