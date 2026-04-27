@@ -1,3 +1,4 @@
+import { useState } from "react"
 import type { Category, Ingredient } from "../types"
 import IngredientCard from "./IngredientCard"
 
@@ -7,8 +8,15 @@ interface Props {
 }
 
 export default function IngredientSection({ categories, ingredients }: Props) {
+  const [activeCategory, setActiveCategory] = useState<string>("all")
+
   const visibleCategories = categories.filter((c) => c.id !== 6)
-  const visibleIngredients = ingredients.filter((i) => i.categoryId !== 6)
+
+  const filteredIngredients = ingredients.filter((i) => {
+    if (i.categoryId === 6) return false
+    if (activeCategory === "all") return true
+    return i.categoryId === Number(activeCategory)
+  })
 
   return (
     <div className="bg-zinc-800 rounded-[3rem] p-8 text-white w-full shadow-lg">
@@ -30,10 +38,25 @@ export default function IngredientSection({ categories, ingredients }: Props) {
 
       {/* Category filter buttons */}
       <div className="flex flex-wrap gap-3 mb-6">
+        <button
+          onClick={() => setActiveCategory("all")}
+          className={`font-bold px-6 py-2 rounded-full transition-colors ${
+            activeCategory === "all"
+              ? "bg-white text-black"
+              : "bg-[#A2D135] text-black hover:bg-opacity-80"
+          }`}
+        >
+          All
+        </button>
         {visibleCategories.map((cat) => (
           <button
             key={cat.id}
-            className="bg-[#A2D135] text-black font-bold px-6 py-2 rounded-full hover:bg-opacity-80 transition-colors"
+            onClick={() => setActiveCategory(String(cat.id))}
+            className={`font-bold px-6 py-2 rounded-full transition-colors ${
+              activeCategory === String(cat.id)
+                ? "bg-white text-black"
+                : "bg-[#A2D135] text-black hover:bg-opacity-80"
+            }`}
           >
             {cat.name}
           </button>
@@ -42,7 +65,7 @@ export default function IngredientSection({ categories, ingredients }: Props) {
 
       {/* Ingredient cards grid */}
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-        {visibleIngredients.map((ingredient) => (
+        {filteredIngredients.map((ingredient) => (
           <IngredientCard key={ingredient.id} ingredient={ingredient} />
         ))}
       </div>
