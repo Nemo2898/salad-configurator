@@ -8,6 +8,8 @@ export default function CenterBowl() {
   const selectedBowl = useIngredientStore((s) => s.selectedBowl)
   const clearSelection = useIngredientStore((s) => s.clearSelection)
 
+  const baseIngredient = slots.base ?? null
+
   const activeIngredients: Ingredient[] = Object.values(slots).filter(
     (i): i is Ingredient => i !== null
   )
@@ -60,13 +62,27 @@ export default function CenterBowl() {
 
       {/* Big Bowl */}
       <div className="w-80 h-80 rounded-full border-[12px] border-gray-200 bg-gray-50 flex flex-col items-center justify-center shadow-inner relative gap-1 p-4 overflow-hidden">
+        {baseIngredient && baseIngredient.image_url && (
+          <img
+            src={baseIngredient.image_url}
+            alt={baseIngredient.name}
+            className="absolute inset-0 w-full h-full object-cover rounded-full z-10"
+          />
+        )}
+        {selectedBowl && selectedBowl.wedge_image_url && (
+          <img
+            src={selectedBowl.wedge_image_url}
+            alt="divider"
+            className="absolute inset-0 w-full h-full object-cover rounded-full z-20"
+          />
+        )}
         {activeIngredients.length === 0 ? (
-          <span className="text-gray-500">Bowl</span>
+          <span className="text-gray-500 z-30">Bowl</span>
         ) : (
-          activeIngredients.map((ing) => (
+          activeIngredients.filter((i) => i.categoryId !== 6).map((ing) => (
             <span
               key={ing.id}
-              className="bg-[#A2D135] text-black text-xs font-bold px-3 py-1 rounded-full"
+              className="bg-[#A2D135] text-black text-xs font-bold px-3 py-1 rounded-full z-30"
             >
               {ing.name}
             </span>
