@@ -1,0 +1,76 @@
+========================================
+  FRESSE BOWL-LASKURI - Project Structure
+========================================
+
+src/
+├── main.tsx                   Entry point, mounts React + BrowserRouter
+├── App.tsx                    Routes: / configurator, /community recipes
+├── index.css                  Tailwind directives (cleaned)
+│
+├── types/
+│   └── index.ts               TS interfaces: BaseType, Bowl, Category,
+│                              Ingredient, Recipe, PriceListItem
+│
+├── services/
+│   └── api.ts                 All API calls: bowls, categories, ingredients,
+│                              baseingredients, prices, recipes, auth/login
+│
+├── store/                     (Zustand state management)
+│   ├── useAuthStore.ts        JWT token + userName, localStorage persistence
+│   ├── useIngredientStore.ts  Current bowl config (selectedBowl, slots, baseType)
+│   └── usePriceStore.ts       Price list, deduplicated by item_id
+│
+├── pages/
+│   ├── Configurator.tsx       Main salad builder, fetches all data, 3-column layout
+│   └── Community.tsx          Saved recipes list with Load / Delete
+│
+├── components/
+│   ├── Header.tsx             Top bar: logo, title, login/logout, nav menu
+│   ├── Footer.tsx             Bottom: contact, social, branding
+│   ├── BowlSelection.tsx      Bowl picker (Step 1), filtered by baseType
+│   ├── BaseSelection.tsx      Base ingredient picker (Step 2), from /baseingredients
+│   ├── CenterBowl.tsx         Circular bowl preview: base img(z-10), divider(z-20),
+│                              wedge imgs(z-30), mode toggle(Salad/Curd),
+│                              undo, clear, save buttons
+│   ├── IngredientSection.tsx  Ingredient browser (Step 3), search + category
+│                              filter + dietary badges (G/L/V)
+│   ├── IngredientCard.tsx     Ingredient card: name + price + diet tags, click to add
+│   ├── SummaryBar.tsx         Bottom summary: selected items, total count/weight/price
+│   ├── Modal.tsx              Reusable modal: overlay + close btn + stopPropagation
+│   ├── LoginModal.tsx         Login form, POST /auth/login, fetches prices on success
+│   └── SaveRecipeModal.tsx    Save form, POST /api/recipes, clears bowl on success
+│
+├── utils/
+│   ├── calculations.ts        calculateTotalWeight() pure function
+│   └── calculations.test.ts   Vitest unit tests
+│
+└── assets/
+    └── fresse-logo.png         Fresse brand logo (from salaattimestari.fi)
+
+
+Data Flow:
+----------
+  API --fetch--> Configurator --props--> BowlSelection / BaseSelection / IngredientSection
+                                                   |
+                                        useIngredientStore (selectedBowl, slots, baseType)
+                                                   |
+                    CenterBowl (preview) / SummaryBar (summary) / SaveRecipeModal (save)
+
+
+API Endpoints:
+--------------
+  GET  /api/bowls?type_id=[1|2]
+  GET  /api/categories?type_id=[1|2]
+  GET  /api/ingredients?category_id=[id]
+  GET  /api/baseingredients
+  GET  /api/prices                     (requires Bearer token)
+  GET  /api/recipes                    (requires Bearer token)
+  POST /api/recipes                    (requires Bearer token)
+  DELETE /api/recipes/:id              (requires Bearer token)
+  POST /api/auth/login
+
+
+Test credentials:
+-----------------
+  Email:    yritys@esimerkki.fi
+  Password: salasana123
